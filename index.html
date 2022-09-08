@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UFT-8">
+        <title>The Komputer Store</title>
+        <!-- TODO write a description <meta name="description" content="The home page to my first ever website."/>-->
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/index.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1 id="headline">Komputer store</h1>
+        </header>
+        <main>
+            <!-- change from div to span, or section?-->
+            <div id="Bank">
+                <h2>Joe Banker</h2>
+                <span>
+                    <p id="balance"></p>
+                </span>
+                <span>
+                    <p id="OutstandingLoan"></p>
+                    <p id="loanMessage"></p>
+                    <!-- TODO outstanding loan must be reduced as loan is paid back-->
+                </span>
+                <button id="btn-get-loan" onclick="getLoan()">Get a loan</button> <!--TODO is id necesary here?-->
+            </div>
+            <div id="Work"></div>
+            <div id="LaptopSelection"></div>
+            <div id="LaptopInformation"></div>
+        </main>
+    </body>
+</html>
