@@ -20,13 +20,19 @@
                     <p id="balance"></p>
                 </span>
                 <span>
+                    <!-- TODO outstanding loan must be reduced as loan is paid back-->
                     <p id="OutstandingLoan"></p>
                     <p id="loanMessage"></p>
-                    <!-- TODO outstanding loan must be reduced as loan is paid back-->
                 </span>
                 <button id="btn-get-loan" onclick="getLoan()">Get a loan</button> <!--TODO is id necesary here?-->
             </div>
-            <div id="Work"></div>
+            <div id="Work">
+                <h2>Work</h2>
+                <p id="Pay"></p>
+                <button onclick="transferSalary()">Bank</button>
+                <button onclick="work()">Work</button>
+                <button id="repayLoanButton" onclick="repayLoan()">Repay Loan</button>
+            </div>
             <div id="LaptopSelection"></div>
             <div id="LaptopInformation"></div>
         </main>
