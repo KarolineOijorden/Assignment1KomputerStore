@@ -30,3 +30,11 @@ div {
 #Bank, #Work, #LaptopSelection {
     width: 15%;
 }
+
+#btn-get-loan {
+    background-color: rgb(127, 233, 127);
+    border-color: rgb(115, 210, 115);
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: none;
+}
