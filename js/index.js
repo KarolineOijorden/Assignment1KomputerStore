@@ -6,6 +6,7 @@ window.onload = function(){
     document.getElementById('balance').innerHTML = "Balance: " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(balance);
     document.getElementById('Pay').innerHTML = "Pay: " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(salaryBalance);
     document.getElementById('repayLoanButton').style.visibility = "hidden";
+    getLaptops();
 };
 
 // TODO show the respond messages in another way
@@ -32,10 +33,12 @@ function getLoan() {
 }
 
 function setLoan(newLoan) {
+    newLoan = Number(newLoan);
     outstandingLoan = newLoan;
     document.getElementById("OutstandingLoan").innerHTML = "Outstanding loan: " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(outstandingLoan);
+    setBalance(balance + newLoan); // add the loaned amount to the bank balance
     if (outstandingLoan == 0) {
-        document.getElementById('repayLoanButton').style.visibility = "hidden";
+        document.getElementById('repayLoanButton').style.visibility = "hidden"; // if there are no loan, remove the repay loan button
     }
 }
 
@@ -72,7 +75,6 @@ function transferSalary() {
 /*
 The work button must increase your Pay balance at a rate of 100 on each click. 
 */
-// TODO give feedback when succsesful
 function work() {
     setSalary(salaryBalance + 100);
 }
@@ -98,4 +100,127 @@ function repayLoan() {
         setSalary(0);
         setLoan(outstandingLoan - Math.abs(remaningSalary));
     }
+}
+/*
+const getLaptops = async () => {
+    const response = await fetch('https://noroff-komputer-store-api.herokuapp.com/computers');
+    const laptops = await response.json();
+    let dropdown = document.getElementById('laptop-dropdown');
+    let option;
+    for (let i = 0; i < laptops.length; i++) {
+      option = document.createElement('option');
+      option.text = laptops[i].title;
+      option.value = laptops[i].id; // remove value?
+      dropdown.add(option);
+    }
+    displayLaptop(laptops); // TODO add the first one as default
+  }*/
+/*
+function displayLaptop(laptops) {
+    const selected = document.getElementById('laptop-dropdown'); //rename
+    const pElem = document.getElementById('p');
+
+    // When a new <option> is selected
+    selected.addEventListener('change', () => {
+        var select = document.getElementById('laptop-dropdown');
+        var value = select.options[select.selectedIndex].value;
+        document.getElementById('test').innerHTML = laptops[select.selectedIndex].specs;
+    //const index = selected.selectedIndex;
+    //console.log(laptops[index].title);
+    //makeList(laptops[index].specs);
+    // Add that data to the <p>
+    //document.getElementById('laptop-features').textContent;// = "Features: " + laptops[index].price;
+    /*const featureList = document.getElementById('laptop-features');
+    //document.getElementById('test').textContent = laptops[index].specs;
+    for (let i = 0; i<laptops[index].specs.length; i++) {
+        let listElement = document.createElement('li');
+        //listElement.text = laptops[index].specs[i];
+        // Add the item text
+        listElement.innerHTML = laptops[index].specs[i];
+
+        // Add listItem to the listElement
+        selected.appendChild(listElement);
+    }
+    })
+}*/
+/*
+/*
+function makeList(listData) {
+    // Establish the array which acts as a data source for the list
+    /*let listData = [
+        'Blue',
+        'Red',
+        'White',
+        'Green',
+        'Black',
+        'Orange'
+    ],*/
+/*
+    // Make a container element for the list
+    let listContainer = document.createElement('div'),
+
+    // Make the list
+    listElement = document.createElement('ul'),
+
+    // Set up a loop that goes through the items in listItems one at a time
+    numberOfListItems = listData.length,
+    listItem,
+    i;
+
+    // Add it to the page
+    document.getElementsByTagName('body')[0].appendChild(listContainer);
+    listContainer.appendChild(listElement);
+
+    for (let i = 0; i < numberOfListItems; ++i) {
+        // Create an item for each one
+        listItem = document.createElement('li');
+
+        // Add the item text
+        listItem.innerHTML = listData[i];
+
+        // Add listItem to the listElement
+        listElement.appendChild(listItem);
+    }
+}
+*/
+function getLaptops() {
+    const laptopsElement = document.getElementById("laptop-dropdown");
+    const featureElement = document.getElementById("laptop-features");
+    const titleElement = document.getElementById("laptop-title");
+    const imageElement = document.getElementById("laptop-image");
+    const descriptionElement = document.getElementById("laptop-description");
+    const priceElement = document.getElementById("laptop-price");
+    let laptops = [];
+
+    fetch("https://noroff-komputer-store-api.herokuapp.com/computers")
+        .then(response => response.json())
+        .then(data => laptops = data)
+        .then(laptops => addLaptopsToMenu(laptops));
+    
+    const addLaptopsToMenu = (laptops) => {
+        laptops.forEach(x => addLaptopToMenu(x));
+        featureElement.innerText = laptops[0].specs;
+        titleElement.innerText = laptops[0].title;
+        priceElement.innerText = laptops[0].price;
+        imageElement.innerText = laptops[0].image;
+        descriptionElement.innerText = laptops[0].description;
+    }
+
+    const addLaptopToMenu = (laptop) => {
+        const laptopElement = document.createElement("option");
+        laptopElement.value = laptop.id;
+        laptopElement.appendChild(document.createTextNode(laptop.title));
+        laptopsElement.appendChild(laptopElement);
+    }
+
+    const handleLaptopMenuChange = e => {
+        const selectedLaptop = laptops[e.target.selectedIndex];
+        featureElement.innerText = selectedLaptop.specs;
+        titleElement.innerText = selectedLaptop.title;
+        priceElement.innerText = selectedLaptop.price;
+        imageElement.innerText = selectedLaptop.image;
+        descriptionElement.innerText = selectedLaptop.description;
+    }
+
+    laptopsElement.addEventListener("change", handleLaptopMenuChange);
 }

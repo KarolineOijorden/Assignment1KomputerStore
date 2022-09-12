@@ -14,27 +14,41 @@
         </header>
         <main>
             <!-- change from div to span, or section?-->
-            <div id="Bank">
-                <h2>Joe Banker</h2>
-                <span>
-                    <p id="balance"></p>
-                </span>
-                <span>
-                    <!-- TODO outstanding loan must be reduced as loan is paid back-->
-                    <p id="OutstandingLoan"></p>
-                    <p id="loanMessage"></p>
-                </span>
-                <button id="btn-get-loan" onclick="getLoan()">Get a loan</button> <!--TODO is id necesary here?-->
+            <section>
+                <div id="Bank">
+                    <h2>Joe Banker</h2>
+                    <span>
+                        <p id="balance"></p>
+                    </span>
+                    <span>
+                        <!-- TODO outstanding loan must be reduced as loan is paid back-->
+                        <p id="OutstandingLoan"></p>
+                        <p id="loanMessage"></p>
+                    </span>
+                    <button id="btn-get-loan" onclick="getLoan()">Get a loan</button> <!--TODO is id necesary here?-->
+                </div>
+                <div id="Work">
+                    <h2>Work</h2>
+                    <p id="Pay"></p>
+                    <button onclick="transferSalary()">Bank</button>
+                    <button onclick="work()">Work</button>
+                    <button id="repayLoanButton" onclick="repayLoan()">Repay Loan</button>
+                </div>
+                <div id="LaptopSelection">
+                    <h2>Laptops</h2>
+                    <select id="laptop-dropdown" name="laptops"></select>
+                    <h3>Features:</h3>
+                    <p id="laptop-features"></p>
+                    <!--<ul id="laptop-features"></ul>-->
+                </div>
+            </section>
+            <div id="LaptopInformation">
+                <img id="laptop-image" alt="laptop" width="500" height="600"> <!-- add source tag in js src="img_girl.jpg"-->
+                <p id="laptop-title"></p>
+                <p id="laptop-description"></p>
+                <p id="laptop-price"></p>
+                <button id="buy-laptop-button">BUY NOW</button> <!--TODO create buyLaptop function--> <!--removed onclick="buyLaptop()"-->
             </div>
-            <div id="Work">
-                <h2>Work</h2>
-                <p id="Pay"></p>
-                <button onclick="transferSalary()">Bank</button>
-                <button onclick="work()">Work</button>
-                <button id="repayLoanButton" onclick="repayLoan()">Repay Loan</button>
-            </div>
-            <div id="LaptopSelection"></div>
-            <div id="LaptopInformation"></div>
         </main>
     </body>
 </html>
