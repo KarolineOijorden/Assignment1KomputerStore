@@ -1,39 +1,45 @@
-let balance = 200;
+let balance = 0;
 let outstandingLoan = 0;
 let salaryBalance = 0;
+let selectedLaptop = null;
 
 window.onload = function(){
-    document.getElementById('balance').innerHTML = "Balance: " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(balance);
-    document.getElementById('Pay').innerHTML = "Pay: " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(salaryBalance);
-    document.getElementById('repayLoanButton').style.visibility = "hidden";
-    getLaptops();
+    setBalance(200); // sets the initial balance to 200
+    setSalary(0); // sets the inital slaray to 0
+    document.getElementById('repayLoanButton').style.visibility = "hidden"; // the reapy loan is initially hidden as the user has no loan yet
+    getLaptops(); // loads the available laptops from the API
 };
 
-// TODO show the respond messages in another way
+/**
+ * Attempts to get a loan when the 'Get a loan' button is clicked. It shows a “Prompt” popup box that allows you to enter an amount.
+ * Checks if the loan is valid by that it is not more than double the bank balance and that there is only one loan at a time. 
+ */
 function getLoan() {
-    let text;
     let amount = prompt("Enter the amount you want to loan:");
     if (amount == null) {
         return;
     } else if (isNaN(amount)) {
-        text = "Enter a number";
+        alert("Enter a number");
     } else if (amount < 1) {
-        text = "The loan must be greater than 0";
+        alert("The loan must be greater than 0");
     } else if (amount > balance * 2) {
-        text = "You cannot get a loan more than double of your bank balance: Your maximum amount of loan is " + balance * 2;
+        alert("You cannot get a loan more than double of your bank balance: Your maximum amount of loan is " + balance * 2);
     } else if (outstandingLoan > 0){
-        text = "You can only have one loan at a time";
-    } else { // the loan is succselful
+        alert("You can only have one loan at a time");
+    } else { // the loan is successful
         setLoan(amount);
-        text = "You have loaned " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(amount);
+        alert("You have loaned " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(amount));
         // Once you have a loan, a new button labeled “Repay Loan” appears
         document.getElementById("repayLoanButton").style.visibility = "visible";
     }
-    document.getElementById("loanMessage").innerHTML = text;
 }
 
+/**
+ * Set a loan amount as the outstanding loan
+ * @param {*} newLoan - provide the amount to set the outstanding loan
+ */
 function setLoan(newLoan) {
-    newLoan = Number(newLoan);
+    newLoan = Number(newLoan); // converts the loan amount to a number for proper artimetics
     outstandingLoan = newLoan;
     document.getElementById("OutstandingLoan").innerHTML = "Outstanding loan: " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(outstandingLoan);
     setBalance(balance + newLoan); // add the loaned amount to the bank balance
@@ -42,38 +48,52 @@ function setLoan(newLoan) {
     }
 }
 
+/**
+ * Set an amount as the new bank balance
+ * @param {*} newBalance - provide the amount to set the balance to
+ */
 function setBalance(newBalance) {
     balance = newBalance;
     document.getElementById("balance").innerHTML = "Balance: " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(balance);
 }
 
+/**
+ * Set an amount as the new salary
+ * @param {*} newSalary - provide the amount for the salary
+ */
 function setSalary(newSalary) {
     salaryBalance = newSalary;
     document.getElementById("Pay").innerHTML = "Pay: " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(salaryBalance);
 }
 
 /*
-The bank button must transfer the money from your Pay/Salary balance to your Bank balance. Remember 
-to reset your pay/salary once you transfer.  
-Constraints on Bank button:  
-1. If you have an outstanding loan, 10% of your salary MUST first be deducted and transferred to the 
-outstanding Loan amount  
-2. The balance after the 10% deduction may be transferred to your bank account
+The money from the salary balance is transfered to the bank balance when the bank button is pressed.
+If there is an outstanding loan, 10% of your salary MUST first be deducted and transferred to the 
+outstanding Loan amount. The balance after the 10% deduction may be transferred to your bank account.
 */
-// TODO give feedback if the transfer is succsefull
 function transferSalary() {
-    if (outstandingLoan > 0) {
-        let loanPayBack = salaryBalance/10; // get 10 % of the balance to pay back on the oustanding loan
-        salaryBalance -= loanPayBack;
-        setLoan(outstandingLoan - loanPayBack);
-        if (!confirm("10 % of your salary has been transfered to your outstanding loan. Do you want to transfer the remaining salary to the bank?")) return;
+    if (salaryBalance > 0) { // checks if there are any salary to transfer
+        if (outstandingLoan > 0) { // checks if the user has a loan
+            let loanPayBack = salaryBalance/10; // get 10 % of the balance to pay back on the oustanding loan
+            if (loanPayBack > outstandingLoan) { // if the 10 % to pay back the loan is greater than the loan the rest is added to the salary
+                setSalary(salaryBalance - outstandingLoan);
+                setLoan(0);
+            } else {
+                setLoan(outstandingLoan - loanPayBack);
+                setSalary(salaryBalance - loanPayBack);
+            }
+            if (!confirm("10 % of your salary has been transfered to your outstanding loan. Do you want to transfer the remaining salary to the bank?")) return;
+        }   
+        setBalance(balance + salaryBalance); // transfers the salary to the bank balance
+        setSalary(0); // resets the salary to 0 as the money is transfered to the bank balance
+        alert("Transfer was successful");
+    } else {
+        alert("You do not have any money to transfer");
     }
-    setBalance(balance + salaryBalance); // transfers the salary to the bank balance
-    setSalary(0); // resets the salary to 0 as the money is transfered to the bank balance
 }
 
 /*
-The work button must increase your Pay balance at a rate of 100 on each click. 
+Increases the Pay balance when the work button is pressed at a rate of 100 on each click. 
 */
 function work() {
     setSalary(salaryBalance + 100);
@@ -101,88 +121,7 @@ function repayLoan() {
         setLoan(outstandingLoan - Math.abs(remaningSalary));
     }
 }
-/*
-const getLaptops = async () => {
-    const response = await fetch('https://noroff-komputer-store-api.herokuapp.com/computers');
-    const laptops = await response.json();
-    let dropdown = document.getElementById('laptop-dropdown');
-    let option;
-    for (let i = 0; i < laptops.length; i++) {
-      option = document.createElement('option');
-      option.text = laptops[i].title;
-      option.value = laptops[i].id; // remove value?
-      dropdown.add(option);
-    }
-    displayLaptop(laptops); // TODO add the first one as default
-  }*/
-/*
-function displayLaptop(laptops) {
-    const selected = document.getElementById('laptop-dropdown'); //rename
-    const pElem = document.getElementById('p');
 
-    // When a new <option> is selected
-    selected.addEventListener('change', () => {
-        var select = document.getElementById('laptop-dropdown');
-        var value = select.options[select.selectedIndex].value;
-        document.getElementById('test').innerHTML = laptops[select.selectedIndex].specs;
-    //const index = selected.selectedIndex;
-    //console.log(laptops[index].title);
-    //makeList(laptops[index].specs);
-    // Add that data to the <p>
-    //document.getElementById('laptop-features').textContent;// = "Features: " + laptops[index].price;
-    /*const featureList = document.getElementById('laptop-features');
-    //document.getElementById('test').textContent = laptops[index].specs;
-    for (let i = 0; i<laptops[index].specs.length; i++) {
-        let listElement = document.createElement('li');
-        //listElement.text = laptops[index].specs[i];
-        // Add the item text
-        listElement.innerHTML = laptops[index].specs[i];
-
-        // Add listItem to the listElement
-        selected.appendChild(listElement);
-    }
-    })
-}*/
-/*
-/*
-function makeList(listData) {
-    // Establish the array which acts as a data source for the list
-    /*let listData = [
-        'Blue',
-        'Red',
-        'White',
-        'Green',
-        'Black',
-        'Orange'
-    ],*/
-/*
-    // Make a container element for the list
-    let listContainer = document.createElement('div'),
-
-    // Make the list
-    listElement = document.createElement('ul'),
-
-    // Set up a loop that goes through the items in listItems one at a time
-    numberOfListItems = listData.length,
-    listItem,
-    i;
-
-    // Add it to the page
-    document.getElementsByTagName('body')[0].appendChild(listContainer);
-    listContainer.appendChild(listElement);
-
-    for (let i = 0; i < numberOfListItems; ++i) {
-        // Create an item for each one
-        listItem = document.createElement('li');
-
-        // Add the item text
-        listItem.innerHTML = listData[i];
-
-        // Add listItem to the listElement
-        listElement.appendChild(listItem);
-    }
-}
-*/
 function getLaptops() {
     const laptopsElement = document.getElementById("laptop-dropdown");
     const featureElement = document.getElementById("laptop-features");
@@ -190,6 +129,7 @@ function getLaptops() {
     const imageElement = document.getElementById("laptop-image");
     const descriptionElement = document.getElementById("laptop-description");
     const priceElement = document.getElementById("laptop-price");
+    const api = "https://noroff-komputer-store-api.herokuapp.com/";
     let laptops = [];
 
     fetch("https://noroff-komputer-store-api.herokuapp.com/computers")
@@ -199,11 +139,13 @@ function getLaptops() {
     
     const addLaptopsToMenu = (laptops) => {
         laptops.forEach(x => addLaptopToMenu(x));
-        featureElement.innerText = laptops[0].specs;
+        //featureElement.innerText = laptops[0].specs;
         titleElement.innerText = laptops[0].title;
-        priceElement.innerText = laptops[0].price;
-        imageElement.innerText = laptops[0].image;
+        priceElement.innerText = new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(laptops[0].price);
         descriptionElement.innerText = laptops[0].description;
+        imageElement.setAttribute("src", api + laptops[0].image);
+        selectedLaptop = laptops[0]; // sets the inital selected laptop to the first laptop in the menu
+        addFeatureList(laptops[0].specs);
     }
 
     const addLaptopToMenu = (laptop) => {
@@ -214,13 +156,36 @@ function getLaptops() {
     }
 
     const handleLaptopMenuChange = e => {
-        const selectedLaptop = laptops[e.target.selectedIndex];
-        featureElement.innerText = selectedLaptop.specs;
+        selectedLaptop = laptops[e.target.selectedIndex];
+        //featureElement.innerText = selectedLaptop.specs;
         titleElement.innerText = selectedLaptop.title;
-        priceElement.innerText = selectedLaptop.price;
-        imageElement.innerText = selectedLaptop.image;
+        priceElement.innerText = new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(selectedLaptop.price);
         descriptionElement.innerText = selectedLaptop.description;
+        imageElement.setAttribute("src", api + selectedLaptop.image);
+        addFeatureList(selectedLaptop.specs);
+    }
+
+    const addFeatureList = (list) => {
+        document.getElementById("laptop-features").innerHTML = ""; // reset the list before adding new elements
+        for (let i of list) {
+            let li = document.createElement("li"); 
+            li.innerHTML = i;
+            document.getElementById("laptop-features").appendChild(li);
+        }
     }
 
     laptopsElement.addEventListener("change", handleLaptopMenuChange);
+}
+
+function buyLaptop() {
+    if (balance >= selectedLaptop.price) { // checks if the user can afford the laptop
+        if (confirm("You are about to buy the " + selectedLaptop.title + " for " + new Intl.NumberFormat('no-NO', { style: 'currency', currency: 'NOK' }).format(selectedLaptop.price) + ". Do you want to proceed?")) {
+            setBalance(balance - selectedLaptop.price);
+            alert("You have successfully bought the " + selectedLaptop.title);
+        } else {
+            alert("The buy was cancelled");
+        }
+    } else { // the user cannot afford the laptop
+        alert("You do not have enough money to buy the laptop");
+    }
 }

@@ -21,20 +21,132 @@ main {
     padding-left: 10%;
     margin: 0px;
 }
-div {
+
+#Bank, #Work, #LaptopSelection, #LaptopInformation {
     background-color:  #f9f8f8;
     border-radius: 25px;
-    padding: 1%;
+    padding: 10px;
+}
+
+.grid-container {
+    display: grid;
+    column-gap: 10%;
+    row-gap: 5%;
+    grid-auto-columns: 20%;
 }
 
 #Bank, #Work, #LaptopSelection {
-    width: 15%;
+    grid-row-start: 1;
+    grid-row-end: 1;
+}
+
+#Bank {
+    grid-column-start: 1;
+    grid-column-end: 1;
+}
+
+#Work {
+    grid-column-start: 2;
+    grid-column-end: 2;
+}
+
+#LaptopSelection {
+    grid-column-start: 3;
+    grid-column-end: 4;
+}
+
+#LaptopInformation {
+    grid-row-start: 2;
+    grid-row-end: 2;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    padding: 5%;
+}
+
+.laptop-grid {
+    display: grid;
+    column-gap: 5%;
+    row-gap: 5%;
+}
+
+#laptop-image {
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 1;
+    grid-column-end: 1;
+}
+
+#laptop-title {
+    grid-row-start: 1;
+    grid-row-end: 1;
+    grid-column-start: 2;
+    grid-column-end: 2;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+#laptop-description {
+    grid-row-start: 2;
+    grid-row-end: 2;
+    grid-column-start: 2;
+    grid-column-end: 2;
+}
+
+#laptop-price {
+    grid-row-start: 1;
+    grid-row-end: 1;
+    grid-column-start: 3;
+    grid-column-end: 3;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+#buy-laptop-button {
+    grid-row-start: 2;
+    grid-row-end: 2;
+    grid-column-start: 3;
+    grid-column-end: 3;
+    background-color: lightblue;
+    border-color: lightblue;
+}
+
+button {
+    padding: 3%;
+    border-radius: 5px;
 }
 
 #btn-get-loan {
     background-color: rgb(127, 233, 127);
     border-color: rgb(115, 210, 115);
     width: 100%;
-    border-radius: 5px;
-    box-shadow: none;
+}
+
+#btn-bank {
+    width: 49%;
+    background-color: yellow;
+    border-color: yellow;
+    margin-bottom: 5px;
+}
+
+#btn-work {
+    width: 49%;
+    background-color: blue;
+    border-color: blue;
+    color: white;
+    margin-bottom: 5px;
+}
+
+#repayLoanButton {
+    background-color: rgb(127, 233, 127);
+    border-color: rgb(115, 210, 115);
+    width: 100%;
+}
+
+select {
+    width: 100%;
+}
+
+img {
+    width: 150px;
+    height: 150px;
 }
